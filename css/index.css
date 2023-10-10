@@ -1,0 +1,72 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+div#todo_wrapper {
+    width: 600px;
+    margin: 100px auto;
+}
+
+ul#todo_list {
+    display: grid;
+    gap: 10px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li.todo {
+    border: 1px solid red;
+    border-radius: 5px;
+    background-color: #eee;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    align-content: center;
+    transition: opacity 0.3s;
+}
+
+li.todo.todo_done {
+    opacity: 0.5;
+}
+
+.todo_text,
+.todo_icons {
+    padding: 0.5em 1.5em;
+}
+
+/* text */
+.todo_text {
+    display: flex;
+    align-items: center;
+}
+
+/* icons */
+.todo_icons {
+    display: grid;
+    grid-auto-flow: column;
+    align-content: center;
+    gap: 0.5em;
+}
+
+.todo_icons .icon {
+    background-color: #fff;
+    width: 1.5em;
+    padding: 0.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.icon.remove svg path {
+    fill: red;
+}
+
+.icon:not(.remove) svg path {
+    stroke: red;
+}
