@@ -74,6 +74,9 @@ function createElement(tagName, className, parent, options) {
 }
 
 const list = document.querySelector('#todo_list')
+const addToDoBtn = document.querySelector('#add_todo_btn')
+
+addToDoBtn.addEventListener('click', addToDo)
 
 const todoData = [
     {
@@ -100,3 +103,16 @@ todoData.forEach(todo => {
     const todoItem = new Todo(list, todo)
     todoItem.create()
 })
+
+async function addToDo() {
+    const data = await fetch('http://localhost:8000/todos/add', {
+        method: 'POST',
+        body: JSON.stringify({ text: 'hello' }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const response = await data.json()
+    console.log(response)
+}

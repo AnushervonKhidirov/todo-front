@@ -6,6 +6,12 @@ body {
 div#todo_wrapper {
     width: 600px;
     margin: 100px auto;
+    display: grid;
+    gap: 30px;
+}
+
+h1 {
+    margin: 0;
 }
 
 ul#todo_list {
