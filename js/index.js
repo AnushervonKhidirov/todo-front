@@ -7,38 +7,55 @@ const ICON_REMOVE =
 
 class Todo {
     constructor(todoList, todoItem) {
-        this.todoItemData = todoItem
+        this.todoData = todoItem
         this.todoList = todoList
+        this.isEditable = false
+        this.wasBlur = false
     }
     create() {
-        const todoItemClass = this.todoItemData.isDone ? 'todo todo_done' : 'todo'
+        const todoItemClass = this.todoData.isDone ? 'todo todo_done' : 'todo'
 
-        this.todoItem = createElement('li', todoItemClass, this.todoList, {
-            id: this.todoItemData.id,
-        })
-        const todoText = createElement('div', 'todo_text', this.todoItem)
-        const todoIcons = createElement('div', 'todo_icons', this.todoItem)
+        this.todoElem = createElement('li', todoItemClass, this.todoList, { id: this.todoData.id })
+        this.todoText = createElement('div', 'todo_text', this.todoElem)
+        this.todoIcons = createElement('div', 'todo_icons', this.todoElem)
 
-        const doneIcon = createElement('div', 'icon done', todoIcons, { title: 'done' })
-        const editIcon = createElement('div', 'icon edit', todoIcons, { title: 'edit' })
-        const removeIcon = createElement('div', 'icon remove', todoIcons, { title: 'remove' })
+        this.doneIcon = createElement('div', 'icon done', this.todoIcons, { title: 'done' })
+        this.editIcon = createElement('div', 'icon edit', this.todoIcons, { title: 'edit' })
+        this.removeIcon = createElement('div', 'icon remove', this.todoIcons, { title: 'remove' })
 
-        todoText.innerHTML = this.todoItemData.text
+        this.todoText.innerHTML = this.todoData.text
 
-        doneIcon.innerHTML = ICON_DONE
-        editIcon.innerHTML = ICON_EDIT
-        removeIcon.innerHTML = ICON_REMOVE
+        this.doneIcon.innerHTML = ICON_DONE
+        this.editIcon.innerHTML = ICON_EDIT
+        this.removeIcon.innerHTML = ICON_REMOVE
 
-        doneIcon.addEventListener('click', () => this.changeStatus())
+        this.doneIcon.addEventListener('click', () => this.doneHandler())
+        this.editIcon.addEventListener('click', () => this.editHandler())
+        this.todoText.addEventListener('blur', () => this.editHandler(false))
+        this.removeIcon.addEventListener('click', () => this.removeHandler())
     }
 
-    changeStatus() {
-        this.todoItemData.isDone = !this.todoItemData.isDone
+    doneHandler() {
+        this.todoData.isDone = !this.todoData.isDone
 
-        if (this.todoItemData.isDone) {
-            this.todoItem.classList.add('todo_done')
+        if (this.todoData.isDone) {
+            this.todoElem.classList.add('todo_done')
         } else {
-            this.todoItem.classList.remove('todo_done')
+            this.todoElem.classList.remove('todo_done')
+        }
+    }
+
+    editHandler(isEditable, a) {
+        this.isEditable = isEditable !== 'undefined' ? !this.isEditable : isEditable
+        this.todoText.setAttribute('contenteditable', this.isEditable)
+        if (this.isEditable) this.todoText.focus()
+    }
+
+    removeHandler() {
+        this.todoData.isOnTrash = !this.todoData.isOnTrash
+
+        if (this.todoData.isOnTrash) {
+            this.todoElem.remove()
         }
     }
 }
@@ -63,16 +80,19 @@ const todoData = [
         id: 1,
         text: 'todo 1',
         isDone: false,
+        isOnTrash: false,
     },
     {
         id: 2,
         text: 'todo 2',
         isDone: false,
+        isOnTrash: false,
     },
     {
         id: 3,
         text: 'todo 3',
         isDone: true,
+        isOnTrash: false,
     },
 ]
 
