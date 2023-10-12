@@ -75,10 +75,10 @@ li.todo.removed {
     height: 100%;
 }
 
-.icon.remove svg path {
+.icon.move_to_bin svg path {
     fill: red;
 }
 
-.icon:not(.remove) svg path {
+.icon:not(.move_to_bin) svg path {
     stroke: red;
 }
