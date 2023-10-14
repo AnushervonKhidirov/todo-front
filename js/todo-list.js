@@ -1,59 +1,52 @@
-import Todo from './todo.js'
-import { GET_ACTIVE_TODO_URL, GET_REMOVED_TODO_URL, ADD_TODO_URL } from './constans.js'
+import { ActiveTodoItem, BinTodoItem } from './todo-item.js'
+
+import { createElement } from './utils/hooks.js'
 
 class TodoList {
-    constructor(list, addTodoInput, addTodoBtn) {
-        this.list = list
-        this.addInput = addTodoInput
-        this.addBtn = addTodoBtn
-        this.todos = []
+    constructor(listWrapper, todos, updateList) {
+        this.listWrapper = listWrapper
+        this.todos = todos
+        this.updateList = updateList
     }
 
-    async init() {
-        await this.fetchTodos()
-        this.loadAllTodos()
-        this.addBtn.addEventListener('click', () => this.addTodo())
+    init() {
+        this.list = createElement('ul', this.listClassName, this.listWrapper)
+        this.renderTodos()
     }
 
-    async fetchTodos() {
-        const response = await fetch(GET_ACTIVE_TODO_URL)
-        this.todos = await response.json()
-    }
-
-    async addTodo() {
-        if (!this.addInput.value) return
-
-        const response = await fetch(ADD_TODO_URL, {
-            method: 'POST',
-            body: JSON.stringify({ text: this.addInput.value }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-
-        this.loadTodo(await response.json(), true)
-    }
-
-    async loadAllTodos() {
-        await this.fetchTodos()
-
+    update(todos) {
+        this.todos = todos
         this.list.innerHTML = ''
-
-        this.todos.forEach(todo => this.loadTodo(todo))
+        this.renderTodos()
     }
-
-    loadTodo(todo, appendToStart) {
-        const todoItem = new Todo(this.list, todo)
-        todoItem.create(appendToStart)
-    }
-
-    async updateBinList() {}
-
-    async updateActiveList() {}
 }
 
-class ActiveTodoList extends TodoList {}
+export class ActiveTodoList extends TodoList {
+    constructor(...args) {
+        super(...args)
+        this.listClassName = 'active-list'
+    }
 
-class BinTodoList extends TodoList {}
+    renderTodos() {
+        if (!this.list) return
+        this.todos.forEach(todoItem => {
+            const todo = new ActiveTodoItem(this.list, todoItem, this.updateList.bind(this))
+            todo.init()
+        })
+    }
+}
 
-export default TodoList
+export class BinTodoList extends TodoList {
+    constructor(...args) {
+        super(...args)
+        this.listClassName = 'bin-list'
+    }
+
+    renderTodos() {
+        if (!this.list) return
+        this.todos.forEach(todoItem => {
+            const todo = new BinTodoItem(this.list, todoItem, this.updateList.bind(this))
+            todo.init()
+        })
+    }
+}

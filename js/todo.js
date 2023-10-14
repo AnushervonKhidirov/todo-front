@@ -1,137 +1,95 @@
-import { ICON_DONE, ICON_EDIT, ICON_BIN } from './icons.js'
-import { UPDATE_TODO_URL } from './constans.js'
+import { ActiveTodoList, BinTodoList } from './todo-list.js'
+
+import { createElement } from './utils/hooks.js'
+import { GET_ALL_TODO_URL, ADD_TODO_URL } from './utils/constans.js'
 
 class Todo {
-    constructor(todoList, todoItem) {
-        this.todoData = todoItem
-        this.todoList = todoList
-        this.iconsType = ['done', 'edit', 'moveToBin']
-    }
-    create(appendToStart) {
-        const todoItemClass = this.todoData.isDone ? 'todo todo_done' : 'todo'
-
-        this.todoElem = this.createElement('li', todoItemClass, this.todoList, {
-            id: this.todoData.id,
-        }, appendToStart)
-        this.todoText = this.createElement('div', 'todo_text', this.todoElem)
-        this.todoIcons = this.createElement('div', 'todo_icons', this.todoElem)
-
-        this.todoText.innerHTML = this.todoData.text
-
-        this.createIcons(this.iconsType)
-
-        this.todoText.addEventListener('blur', () => this.editHandler(false))
-    }
-
-    createIcons(icons) {
-        const iconsList = {
-            done: {
-                className: 'icon done',
-                title: 'done',
-                icon: ICON_DONE,
-                callback: () => this.doneHandler(),
-            },
-            edit: {
-                className: 'icon edit',
-                title: 'edit',
-                icon: ICON_EDIT,
-                callback: () => this.editHandler(true),
-            },
-            moveToBin: {
-                className: 'icon move_to_bin',
-                title: 'move to bin',
-                icon: ICON_BIN,
-                callback: () => this.removeHandler(),
-            },
-            restore: {
-                className: 'icon restore',
-                title: 'restore',
-                icon: ICON_BIN,
-                callback: () => this.removeHandler(),
-            },
-            remove: {
-                className: 'icon remove',
-                title: 'remove',
-                icon: ICON_BIN,
-                callback: () => this.removeHandler(),
-            },
-        }
-
-        icons.forEach((icon) => {
-            const iconElem = this.createElement('div', iconsList[icon].className, this.todoIcons, { title: iconsList[icon].className })
-            iconElem.innerHTML = iconsList[icon].icon
-            iconElem.addEventListener('click', () => iconsList[icon].callback())
-        })
-    }
-
-    async doneHandler() {
-        this.todoData.isDone = !this.todoData.isDone
-
-        const updatedData = await this.updateTodo()
-
-        updatedData.isDone
-            ? this.todoElem.classList.add('todo_done')
-            : this.todoElem.classList.remove('todo_done')
-    }
-
-    async editHandler(isEditable) {
-        this.todoText.setAttribute('contenteditable', isEditable)
-
-        if (!isEditable) {
-            if (this.todoData.text === this.todoText.innerHTML) return
-            this.todoData.text = this.todoText.innerHTML
-            this.updateTodo()
-        }
-
-        if (isEditable) this.todoText.focus()
-    }
-
-    async removeHandler() {
-        this.todoData.isOnTrash = !this.todoData.isOnTrash
-
-        const updatedData = await this.updateTodo()
-
-        if (updatedData.isOnTrash) {
-            this.todoElem.classList.add('removed')
-            this.todoElem.addEventListener('transitionend', this.removeItemFromList)
+    constructor(wrapper, projectTitle) {
+        this.wrapper = wrapper
+        this.projectTitle = projectTitle
+        this.todos = {
+            all: [],
         }
     }
 
-    async updateTodo() {
-        const response = await fetch(`${UPDATE_TODO_URL}/${this.todoData.id}`, {
+    async init() {
+        await this.fetchAllTodos()
+
+        const projectTitle = createElement('h1', 'project-title', this.wrapper)
+        projectTitle.innerHTML = this.projectTitle
+
+        this.createActiveList()
+        this.createBinList()
+        this.createForm()
+    }
+
+    createActiveList() {
+        const activeListWrapper = createElement('div', 'active-list-wrapper', this.wrapper)
+        this.activeList = new ActiveTodoList(activeListWrapper, this.todos.active, this.updateList.bind(this))
+        this.activeList.init()
+    }
+
+    createBinList() {
+        const binListWrapper = createElement('div', 'bin-list-wrapper', this.wrapper)
+        this.binList = new BinTodoList(binListWrapper, this.todos.onTrash, this.updateList.bind(this))
+        this.binList.init()
+    }
+
+    createForm() {
+        this.form = createElement('form', 'add-todo-form', this.wrapper)
+        this.addTodoInput = createElement('input', 'add-todo-input', this.form)
+        this.addTodoBtn = createElement('button', 'add-todo-btn', this.form, { type: 'submit' })
+
+        this.addTodoBtn.innerHTML = 'Add Todo'
+
+        this.form.addEventListener('submit', this.addTodo.bind(this))
+    }
+
+    updateList(updatedTodo, event) {
+        // TODO: add requests to update on server!
+        
+        this.todos.all = this.todos.all.map(todo => (todo.id === updatedTodo.id ? updatedTodo : todo))
+        this.updateTodos()
+    }
+
+    async addTodo(e) {
+        e.preventDefault()
+
+        if (!this.addTodoInput.value) return
+
+        const response = await fetch(ADD_TODO_URL, {
             method: 'POST',
-            body: JSON.stringify(this.todoData),
+            body: JSON.stringify({ text: this.addTodoInput.value }),
             headers: {
                 'Content-Type': 'application/json',
             },
         })
 
-        return await response.json()
+        if (response.ok) {
+            const addedTodo = await response.json()
+            this.todos.all.unshift(addedTodo)
+            this.addTodoInput.value = ''
+            this.updateTodos()
+        }
     }
 
-    removeItemFromList(e) {
-        if (e.propertyName !== 'height') return
-        e.target.removeEventListener('transitionend', this.removeItemFromList)
-        e.target.remove()
+    async fetchAllTodos() {
+        const response = await fetch(GET_ALL_TODO_URL)
+
+        if (response.ok) {
+            const result = await response.json()
+
+            this.todos.all = result
+            this.updateTodos()
+        }
     }
 
-    createElement(tagName, className, parent, options, appendToStart) {
-        const tag = document.createElement(tagName)
-        if (className) tag.classList.add(...className.split(' '))
-        if (parent) {
-            if (appendToStart) {
-                parent.prepend(tag)
-            } else {
-                parent.append(tag)
-            }
-        }
-        if (options) {
-            for (let key in options) {
-                tag.setAttribute(key, options[key])
-            }
-        }
+    updateTodos() {
+        this.todos.active = this.todos.all.filter(todo => !todo.isOnTrash)
+        this.todos.onTrash = this.todos.all.filter(todo => todo.isOnTrash)
 
-        return tag
+        if (this.activeList) this.activeList.update(this.todos.active)
+        if (this.binList) this.binList.update(this.todos.onTrash)
     }
 }
 

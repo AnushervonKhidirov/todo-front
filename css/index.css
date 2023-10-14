@@ -3,7 +3,7 @@ body {
     margin: 0;
 }
 
-div#todo_wrapper {
+div#todo {
     width: 600px;
     margin: 100px auto;
     display: grid;
@@ -14,14 +14,14 @@ h1 {
     margin: 0;
 }
 
-ul#todo_list {
+ul {
     display: grid;
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-li.todo {
+li {
     border-radius: 5px;
     background-color: #eee;
     display: grid;
@@ -32,11 +32,11 @@ li.todo {
     transition: opacity 0.3s, height 0.3s 0.3s, margin-top 0.3s 0.3s;
 }
 
-li.todo.todo_done {
+li.todo_done {
     opacity: 0.5;
 }
 
-li.todo.removed {
+li.removed {
     opacity: 0;
     height: 0;
     margin-top: 0;
@@ -75,10 +75,16 @@ li.todo.removed {
     height: 100%;
 }
 
-.icon.move_to_bin svg path {
+.icon:is(.move_to_bin, .remove, .restore) svg path {
     fill: red;
 }
 
-.icon:not(.move_to_bin) svg path {
+.icon:not(.move_to_bin, .remove, .restore) svg path {
     stroke: red;
+}
+
+/* form */
+form.add-todo-form {
+    display: grid;
+    gap: 1em;
 }
