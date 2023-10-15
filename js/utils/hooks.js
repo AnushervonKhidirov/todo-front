@@ -16,3 +16,8 @@ export function createElement(tagName, className, parent, options, appendToStart
 
     return tag
 }
+
+export async function fetchTodos(url, options) {
+    const response = await fetch(url, options)
+    return await response.json()
+}

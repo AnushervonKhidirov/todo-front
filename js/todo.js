@@ -1,7 +1,7 @@
 import { ActiveTodoList, BinTodoList } from './todo-list.js'
 
 import { createElement } from './utils/hooks.js'
-import { GET_ALL_TODO_URL, ADD_TODO_URL } from './utils/constans.js'
+import { GET_ALL_TODO_URL, ADD_TODO_URL, REMOVE_EVENT } from './utils/constans.js'
 
 class Todo {
     constructor(wrapper, projectTitle) {
@@ -46,9 +46,11 @@ class Todo {
     }
 
     updateList(updatedTodo, event) {
-        // TODO: add requests to update on server!
-        
-        this.todos.all = this.todos.all.map(todo => (todo.id === updatedTodo.id ? updatedTodo : todo))
+        this.todos.all =
+            event === REMOVE_EVENT
+                ? this.todos.all.filter(todo => todo.id !== updatedTodo.id)
+                : this.todos.all.map(todo => (todo.id === updatedTodo.id ? updatedTodo : todo))
+
         this.updateTodos()
     }
 

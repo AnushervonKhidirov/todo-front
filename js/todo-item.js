@@ -1,5 +1,6 @@
-import { createElement } from './utils/hooks.js'
+import { createElement, fetchTodos } from './utils/hooks.js'
 import { ICON_DONE, ICON_EDIT, ICON_BIN, ICON_RESTORE, ICON_REMOVE } from './utils/icons.js'
+import { REMOVE_EVENT, UPDATE_TODO_URL, REMOVE_TODO_URL } from './utils/constans.js'
 
 class TodoItem {
     constructor(todoWrapper, todo, updateList) {
@@ -9,11 +10,11 @@ class TodoItem {
     }
 
     init(appendToStart) {
-        const todoItemClass = this.todo.isDone ? 'todo todo_done' : 'todo'
+        const todoItemClass = this.todo.isDone ? 'todo todo-done' : 'todo'
 
         this.todoElem = createElement('li', todoItemClass, this.wrapper, { id: this.todo.id }, appendToStart)
-        this.todoText = createElement('div', 'todo_text', this.todoElem)
-        this.todoIcons = createElement('div', 'todo_icons', this.todoElem)
+        this.todoText = createElement('div', 'todo-text', this.todoElem)
+        this.todoIcons = createElement('div', 'todo-icons', this.todoElem)
 
         this.todoText.innerHTML = this.todo.text
 
@@ -56,7 +57,6 @@ class TodoItem {
         }
 
         icons.forEach(icon => {
-            console.log(iconsList[icon]);
             const iconElem = createElement('div', iconsList[icon].className, this.todoIcons, {
                 title: iconsList[icon].className,
             })
@@ -74,24 +74,45 @@ export class ActiveTodoItem extends TodoItem {
 
     async doneHandler() {
         this.todo.isDone = !this.todo.isDone
-        this.updateList(this.todo)
+
+        const response = await fetchTodos(UPDATE_TODO_URL, {
+            method: 'POST',
+            body: JSON.stringify(this.todo),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        this.updateList(response)
     }
 
     async editTextHandler(isEditable) {
         this.todoText.setAttribute('contenteditable', isEditable)
 
-        if (!isEditable) {
-            if (this.todo.text === this.todoText.innerHTML) return
-            this.todo.text = this.todoText.innerHTML
-            this.updateList(this.todo)
-        }
-
         if (isEditable) this.todoText.focus()
+        if (isEditable || this.todo.text === this.todoText.innerHTML) return
+
+        const response = await fetchTodos(UPDATE_TODO_URL, {
+            method: 'POST',
+            body: JSON.stringify({ ...this.todo, text: this.todoText.innerHTML }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        this.updateList(response)
     }
 
     async moveToBin() {
-        this.todo.isOnTrash = true
-        this.updateList(this.todo)
+        const response = await fetchTodos(UPDATE_TODO_URL, {
+            method: 'POST',
+            body: JSON.stringify({ ...this.todo, isOnTrash: true }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        this.updateList(response)
     }
 }
 
@@ -102,9 +123,26 @@ export class BinTodoItem extends TodoItem {
     }
 
     async restore() {
-        this.todo.isOnTrash = false
-        this.updateList(this.todo)
+        const response = await fetchTodos(UPDATE_TODO_URL, {
+            method: 'POST',
+            body: JSON.stringify({ ...this.todo, isOnTrash: false }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        this.updateList(response)
     }
 
-    async remove() {}
+    async remove() {
+        const response = await fetchTodos(REMOVE_TODO_URL, {
+            method: 'DELETE',
+            body: JSON.stringify(this.todo),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        this.updateList(this.todo, REMOVE_EVENT)
+    }
 }

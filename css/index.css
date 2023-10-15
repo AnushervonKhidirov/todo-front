@@ -32,7 +32,7 @@ li {
     transition: opacity 0.3s, height 0.3s 0.3s, margin-top 0.3s 0.3s;
 }
 
-li.todo_done {
+li.todo-done {
     opacity: 0.5;
 }
 
@@ -42,26 +42,26 @@ li.removed {
     margin-top: 0;
 }
 
-.todo_text,
-.todo_icons {
+.todo-text,
+.todo-icons {
     padding: 0.5em 1.5em;
 }
 
 /* text */
-.todo_text {
+.todo-text {
     display: flex;
     align-items: center;
 }
 
 /* icons */
-.todo_icons {
+.todo-icons {
     display: grid;
     grid-auto-flow: column;
     align-content: center;
     gap: 0.5em;
 }
 
-.todo_icons .icon {
+.todo-icons .icon {
     background-color: #fff;
     width: 1.5em;
     padding: 0.2em;
