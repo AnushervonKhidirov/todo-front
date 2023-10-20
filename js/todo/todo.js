@@ -38,7 +38,9 @@ class Todo {
     createForm() {
         this.form = createElement('form', 'add-todo-form', this.wrapper)
         this.addTodoInput = createElement('input', 'add-todo-input', this.form)
-        this.addTodoBtn = createElement('button', 'add-todo-btn', this.form, { type: 'submit' })
+        this.addTodoBtn = createElement('button', 'add-todo-btn', this.form, {
+            attribute: { type: 'submit' },
+        })
 
         this.addTodoBtn.innerHTML = 'Add Todo'
 

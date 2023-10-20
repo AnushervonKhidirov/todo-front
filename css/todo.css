@@ -1,0 +1,47 @@
+div.todo {
+    display: grid;
+    width: 600px;
+    gap: 30px;
+    margin: 100px auto;
+}
+
+.todo-text,
+.todo-icons {
+    padding: 0.5em 1.5em;
+}
+
+/* text */
+.todo-text {
+    display: flex;
+    align-items: center;
+}
+
+/* icons */
+.todo-icons {
+    display: grid;
+    align-content: center;
+    gap: 0.5em;
+    grid-auto-flow: column;
+}
+
+.todo-icons .icon {
+    width: 1.5em;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 0.2em;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.icon:is(.move_to_bin, .remove, .restore) svg path {
+    fill: red;
+}
+
+.icon:not(.move_to_bin, .remove, .restore) svg path {
+    stroke: red;
+}

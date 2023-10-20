@@ -1,23 +1,23 @@
-export function createElement(tagName, className, parent, options, appendToStart) {
+export function createElement(tagName, className, parent, { attribute, prepend } = {}) {
     const tag = document.createElement(tagName)
     if (className) tag.classList.add(...className.split(' '))
     if (parent) {
-        if (appendToStart) {
+        if (prepend) {
             parent.prepend(tag)
         } else {
             parent.append(tag)
         }
     }
-    if (options) {
-        for (let key in options) {
-            tag.setAttribute(key, options[key])
+    if (attribute) {
+        for (let key in attribute) {
+            tag.setAttribute(key, attribute[key])
         }
     }
 
     return tag
 }
 
-export async function fetchTodos(url, options) {
+export async function fetchData(url, options) {
     const response = await fetch(url, options)
     return await response.json()
 }

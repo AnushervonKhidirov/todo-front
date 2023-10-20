@@ -1,6 +1,6 @@
-import Todo from './todo.js'
+import Project from './project/project.js'
 
-const todoWrapper = document.querySelector('#todo')
-const list = new Todo(todoWrapper, 'Project title')
+const wrapper = document.querySelector('#wrapper')
 
-list.init()
+const project = new Project(wrapper)
+project.init()

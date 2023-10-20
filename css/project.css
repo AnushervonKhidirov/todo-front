@@ -1,0 +1,69 @@
+.project-list-wrapper {
+    display: grid;
+    gap: 2em 1em;
+}
+
+.project-header {
+    color: var(--primary);
+}
+
+/* list */
+ul.project-list {
+    grid-auto-columns: 300px;
+    grid-auto-rows: 150px;
+    grid-auto-flow: column;
+}
+
+li.project-item {
+    position: relative;
+    grid-template-rows: max-content max-content 1fr;
+    transform-style: preserve-3d;
+    transition: transform 3s;
+}
+
+li.project-item.flip {
+    transform: rotateY(180deg);
+}
+
+.project-id i {
+    font-size: 0.8em;
+}
+
+/* confirm window */
+.confirm-window {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    gap: 1em;
+    background-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--tertiary);
+    border-radius: 1em;
+    padding: 1em;
+    transform: translateZ(-1px) rotateY(180deg);
+}
+
+/* buttons */
+.action-buttons,
+.confirm-answers {
+    display: grid;
+    justify-self: self-end;
+    align-self: self-end;
+    gap: 0.5em;
+    grid-auto-flow: column;
+}
+
+li.project-item.flip .action-buttons {
+    pointer-events: none;
+}
+
+li.project-item button {
+    background-color: var(--tertiary);
+    color: var(--primary);
+    border: 2px solid var(--tertiary);
+}
+
+li.project-item button:hover {
+    background-color: var(--primary);
+    color: var(--tertiary);
+}

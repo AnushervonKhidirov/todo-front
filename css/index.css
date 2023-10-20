@@ -1,90 +1,92 @@
+@import 'project.css';
+@import 'todo.css';
+
+:root {
+    --primary: #645394;
+    --secondary: #9e7bb5;
+    --tertiary: #fff0f5;
+}
+
 body {
-    padding: 0;
+    background-color: var(--tertiary);
+    font-family: Ubuntu, sans-serif;
+    margin: 100px;
+}
+
+h1,
+h2,
+h3 {
     margin: 0;
 }
 
-div#todo {
-    width: 600px;
-    margin: 100px auto;
-    display: grid;
-    gap: 30px;
-}
-
-h1 {
-    margin: 0;
-}
-
+/* list */
 ul {
     display: grid;
+    gap: 1em;
     list-style-type: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
 li {
-    border-radius: 5px;
-    background-color: #eee;
     display: grid;
-    height: 45px;
-    margin-top: 10px;
-    grid-template-columns: 1fr max-content;
-    align-content: center;
-    transition: opacity 0.3s, height 0.3s 0.3s, margin-top 0.3s 0.3s;
-}
-
-li.todo-done {
-    opacity: 0.5;
-}
-
-li.removed {
-    opacity: 0;
-    height: 0;
-    margin-top: 0;
-}
-
-.todo-text,
-.todo-icons {
-    padding: 0.5em 1.5em;
-}
-
-/* text */
-.todo-text {
-    display: flex;
-    align-items: center;
-}
-
-/* icons */
-.todo-icons {
-    display: grid;
-    grid-auto-flow: column;
-    align-content: center;
-    gap: 0.5em;
-}
-
-.todo-icons .icon {
-    background-color: #fff;
-    width: 1.5em;
-    padding: 0.2em;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.icon svg {
-    width: 100%;
-    height: 100%;
-}
-
-.icon:is(.move_to_bin, .remove, .restore) svg path {
-    fill: red;
-}
-
-.icon:not(.move_to_bin, .remove, .restore) svg path {
-    stroke: red;
+    gap: 1em;
+    background-color: var(--primary);
+    color: var(--tertiary);
+    border-radius: 1em;
+    padding: 1em;
 }
 
 /* form */
-form.add-todo-form {
+form {
     display: grid;
-    gap: 1em;
+    width: 500px;
+    gap: 0.5em;
+    font-size: 1em;
+}
+
+input {
+    background-color: var(--tertiary);
+    color: var(--primary);
+    font-size: 1em;
+    border: 2px solid var(--primary);
+    border-radius: 1em;
+    outline: none;
+    padding: 0.5em 1em;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s;
+}
+
+input:focus {
+    box-shadow: 0 0 0.5em var(--secondary);
+}
+
+input::placeholder {
+    color: var(--primary);
+    font-family: Ubuntu, sans-serif;
+    font-style: italic;
+}
+
+button {
+    font-size: 1em;
+    font-family: inherit;
+    font-style: italic;
+    border: none;
+    border-radius: 1em;
+    padding: 0.25em 1em;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+form button {
+    justify-self: self-end;
+    background-color: var(--primary);
+    color: var(--tertiary);
+    font-weight: 700;
+    padding: 0.5em 2em;
+}
+
+form button:hover {
+    background-color: var(--secondary);
 }

@@ -5,4 +5,11 @@ export const ADD_TODO_URL = 'http://localhost:8000/todos/add'
 export const UPDATE_TODO_URL = 'http://localhost:8000/todos/update'
 export const REMOVE_TODO_URL = 'http://localhost:8000/todos/remove'
 
+export const GET_ALL_PROJECT_URL = 'http://localhost:8000/projects/all'
+export const GET_ACTIVE_PROJECT_URL = 'http://localhost:8000/projects/active'
+export const GET_REMOVED_PROJECT_URL = 'http://localhost:8000/projects/removed'
+export const ADD_PROJECT_URL = 'http://localhost:8000/projects/add'
+export const UPDATE_PROJECT_URL = 'http://localhost:8000/projects/update'
+export const REMOVE_PROJECT_URL = 'http://localhost:8000/projects/remove'
+
 export const REMOVE_EVENT = 'remove'
