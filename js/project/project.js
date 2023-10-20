@@ -1,14 +1,12 @@
 import ProjectList from './project-list.js'
 
 import { createElement } from '../utils/hooks.js'
-import { GET_ALL_PROJECT_URL, GET_ACTIVE_PROJECT_URL, ADD_PROJECT_URL, REMOVE_EVENT } from '../utils/constans.js'
+import { GET_ALL_PROJECT_URL, ADD_PROJECT_URL, REMOVE_EVENT } from '../utils/constans.js'
 
 class Project {
     constructor(wrapper) {
         this.wrapper = wrapper
-        this.projects = {
-            all: []
-        }
+        this.projects = {}
     }
 
     async init() {
@@ -19,9 +17,7 @@ class Project {
 
     renderList() {
         this.projectListWrapper = createElement('div', 'project-list-wrapper', this.wrapper)
-
-        const header = createElement('h1', 'project-header', this.projectListWrapper)
-        header.innerHTML = 'My projects'
+        createElement('h1', 'project-header', this.projectListWrapper, null, 'My projects')
 
         this.projectList = new ProjectList(this.projectListWrapper, this.projects.active, this.updateList.bind(this))
         this.projectList.init()
@@ -30,16 +26,11 @@ class Project {
     renderForm() {
         this.form = createElement('form', 'add-project-form', this.projectListWrapper)
         this.formInput = createElement('input', 'input-project', this.form, {
-            attribute: {
-                type: 'text',
-                placeholder: 'Project name',
-            },
-        })
-        this.formBtn = createElement('button', 'submit-project', this.form, {
-            attribute: { type: 'submit' },
+            type: 'text',
+            placeholder: 'Project name',
         })
 
-        this.formBtn.innerHTML = 'Add project'
+        this.formBtn = createElement('button', 'submit-project', this.form, { type: 'submit' }, 'Add project')
         this.form.addEventListener('submit', this.addProject.bind(this))
     }
 
@@ -56,23 +47,20 @@ class Project {
             },
         })
 
-        if (response.ok) {
-            const addedProject = await response.json()
-            this.projects.all.push(addedProject)
-            this.formInput.value = ''
-            this.updateProjects()
-        }
+        if (!response.ok) return
+
+        this.projects.all.push(await response.json())
+        this.formInput.value = ''
+        this.updateProjects()
     }
 
     async fetchAllProjects() {
         const response = await fetch(GET_ALL_PROJECT_URL)
 
         if (response.ok) {
-            const result = await response.json()
-
-            this.projects.all = result
+            this.projects.all = await response.json()
             this.updateProjects()
-        }
+        } else this.projects.all = []
     }
 
     updateList(updatedProject, event) {

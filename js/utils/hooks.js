@@ -1,6 +1,8 @@
-export function createElement(tagName, className, parent, { attribute, prepend } = {}) {
+export function createElement(tagName, className, parent, attribute, inner, prepend) {
     const tag = document.createElement(tagName)
+
     if (className) tag.classList.add(...className.split(' '))
+    
     if (parent) {
         if (prepend) {
             parent.prepend(tag)
@@ -8,6 +10,9 @@ export function createElement(tagName, className, parent, { attribute, prepend }
             parent.append(tag)
         }
     }
+
+    if (inner) tag.innerHTML = inner
+
     if (attribute) {
         for (let key in attribute) {
             tag.setAttribute(key, attribute[key])
