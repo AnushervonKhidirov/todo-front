@@ -10,7 +10,19 @@
 body {
     background-color: var(--tertiary);
     font-family: Ubuntu, sans-serif;
-    margin: 100px;
+    margin: 0;
+}
+
+header {
+    background-color: var(--primary);
+    color: #fff;
+    padding: 2em;
+}
+
+main {
+    margin: 50px 100px;
+    display: grid;
+    gap: 2em;
 }
 
 h1,

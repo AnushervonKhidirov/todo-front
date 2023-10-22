@@ -9,9 +9,8 @@
 
 /* list */
 ul.project-list {
-    grid-auto-columns: 300px;
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 150px;
-    grid-auto-flow: column;
 }
 
 li.project-item {
