@@ -1,32 +1,35 @@
-import Projects from './projects.js'
+import Projects from './projects/projects.js'
+import Todos from './todos/todos.js'
 import { createElement } from '../utils/hooks.js'
 
 class App {
-    constructor(public wrapper: HTMLElement) {
+    wrapper: HTMLElement
+    header: HTMLElement
+    main: HTMLElement
+
+    constructor(wrapper: HTMLElement) {
         this.wrapper = wrapper
+        this.header = createElement('header', null, this.wrapper)
+        this.main = createElement('main', null, this.wrapper)
     }
 
     init() {
-        this.renderHeader()
-        this.renderMain()
+        createElement('h1', 'header-title', this.header, null, 'My Projects')
+        this.openTodos()
     }
 
-    renderHeader() {
-        const header = createElement('header', null, this.wrapper)
-        createElement('h1', 'header-title', header, null, 'My Projects')
+    openProjects() {
+        this.main.innerHTML = ''
+        const projects = new Projects(this.main, this.openTodos.bind(this))
+        projects.init()
     }
 
-    renderMain() {
-        const main = createElement('main', null, this.wrapper)
-        this.openProjects(main)
+    openTodos() {
+        this.main.innerHTML = ''
+        const todos = new Todos(this.main, this.openProjects.bind(this))
+        todos.init()
     }
 
-    openProjects(projectListWrapper: HTMLElement) {
-        const project = new Projects(projectListWrapper, this.openTodos)
-        project.init()
-    }
-
-    openTodos() {}
     openBin() {}
 
     closeProjects() {}

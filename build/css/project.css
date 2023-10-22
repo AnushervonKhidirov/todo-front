@@ -1,15 +1,5 @@
-.project-list-wrapper {
-    display: grid;
-    gap: 2em 1em;
-}
-
-.project-header {
-    color: var(--primary);
-}
-
 /* list */
 ul.project-list {
-    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 150px;
 }
 
@@ -46,10 +36,10 @@ li.project-item.flip {
 .action-buttons,
 .confirm-answers {
     display: grid;
+    grid-auto-flow: column;
     justify-self: self-end;
     align-self: self-end;
     gap: 0.5em;
-    grid-auto-flow: column;
 }
 
 li.project-item.flip .action-buttons {
@@ -63,6 +53,25 @@ li.project-item button {
 }
 
 li.project-item button:hover {
-    background-color: var(--primary);
+    background-color: transparent;
     color: var(--tertiary);
+}
+
+
+@media screen and (min-width: 1440px) {
+    ul.project-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (min-width: 1150px) and (max-width: 1440px) {
+    ul.project-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (min-width: 850px) and (max-width: 1150px) {
+    ul.project-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

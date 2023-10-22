@@ -1,7 +1,7 @@
-import { createElement } from '../utils/hooks.js'
-import { EDIT_EVENT, DELETE_EVENT, UPDATE_PROJECT_URL } from '../utils/constans.js'
+import { createElement } from '../../utils/hooks.js'
+import { EDIT_EVENT, DELETE_EVENT, UPDATE_PROJECT_URL } from '../../utils/constans.js'
 
-import type { IProject } from '../utils/types.js'
+import type { IProject } from '../../utils/types.js'
 
 class Project {
     wrapper: HTMLElement
@@ -49,7 +49,7 @@ class Project {
         openBtn.addEventListener('click', this.openTodos.bind(this))
 
         const editBtn = createElement('button', 'edit-project-btn', actionButtons, null, 'edit')
-        // editBtn.addEventListener('click', this.edit.bind(this, true))
+        editBtn.addEventListener('click', this.edit.bind(this, true))
 
         const deleteBtn = createElement('button', 'delete-project-btn', actionButtons, null, 'delete')
         deleteBtn.addEventListener('click', this.delete.bind(this))

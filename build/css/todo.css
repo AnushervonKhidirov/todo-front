@@ -1,47 +1,38 @@
-div.todo {
-    display: grid;
-    width: 600px;
-    gap: 30px;
-    margin: 100px auto;
+/* list */
+ul.todo-list {
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
 }
 
-.todo-text,
-.todo-icons {
-    padding: 0.5em 1.5em;
-}
-
-/* text */
-.todo-text {
-    display: flex;
+li.todo-item {
+    position: relative;
+    grid-template-columns: 1fr max-content;
     align-items: center;
+    padding: 0.5em 1em;
 }
 
-/* icons */
-.todo-icons {
+
+/* buttons */
+.action-buttons,
+.confirm-answers {
     display: grid;
-    align-content: center;
-    gap: 0.5em;
     grid-auto-flow: column;
+    justify-self: self-end;
+    align-self: self-end;
+    gap: 0.5em;
 }
 
-.todo-icons .icon {
-    width: 1.5em;
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 0.2em;
-    box-sizing: border-box;
-    cursor: pointer;
+li.todo-item.flip .action-buttons {
+    pointer-events: none;
 }
 
-.icon svg {
-    width: 100%;
-    height: 100%;
+li.todo-item button {
+    background-color: var(--tertiary);
+    color: var(--primary);
+    border: 2px solid var(--tertiary);
 }
 
-.icon:is(.move_to_bin, .remove, .restore) svg path {
-    fill: red;
-}
-
-.icon:not(.move_to_bin, .remove, .restore) svg path {
-    stroke: red;
+li.todo-item button:hover {
+    background-color: transparent;
+    color: var(--tertiary);
 }

@@ -1,9 +1,9 @@
 import Project from './project.js'
 
-import { createElement } from '../utils/hooks.js'
-import { GET_ACTIVE_PROJECT_URL, ADD_PROJECT_URL, ADD_EVENT } from '../utils/constans.js'
+import { createElement } from '../../utils/hooks.js'
+import { GET_ACTIVE_PROJECT_URL, ADD_PROJECT_URL, ADD_EVENT } from '../../utils/constans.js'
 
-import type { IProject } from '../utils/types.js'
+import type { IProject } from '../../utils/types.js'
 
 class Projects {
     wrapper: HTMLElement
@@ -32,7 +32,7 @@ class Projects {
 
             if (response.ok) {
                 this.projects = await response.json()
-            } else throw new Error('Error to get projects, try again later')
+            } else throw new Error("Cant' to get projects, try again later")
         } catch (err: any) {
             alert(err.message)
         }
@@ -79,7 +79,7 @@ class Projects {
                 this.renderProject(this.projectList, projectData)
                 this.updateData(ADD_EVENT, projectData)
                 this.formInput.value = ''
-            } else throw new Error('Error to add project, try again later')
+            } else throw new Error("Can't to add project, try again later")
         } catch (err: any) {
             alert(err.message)
         }
@@ -87,7 +87,7 @@ class Projects {
 
     updateData(e: CustomEvent, data: IProject) {
         if (e.type === 'add') this.projects.push(data)
-        if (e.type === 'edit') this.projects = this.projects.map(project => project.id === data.id ? data : project)
+        if (e.type === 'edit') this.projects = this.projects.map(project => (project.id === data.id ? data : project))
         if (e.type === 'delete') this.projects = this.projects.filter(project => project.id !== data.id)
     }
 }
