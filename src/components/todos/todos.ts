@@ -7,13 +7,15 @@ import type { ITodo } from '../../utils/types.js'
 
 class Todos {
     wrapper: HTMLElement
+    projectId: string
     openProjects: () => void
     todos: ITodo[]
     todoList: HTMLUListElement
     formInput: HTMLInputElement | null
 
-    constructor(wrapper: HTMLElement, openProjects: () => void) {
+    constructor(wrapper: HTMLElement, projectId: string, openProjects: () => void) {
         this.wrapper = wrapper
+        this.projectId = projectId
         this.openProjects = openProjects
         this.todos = []
         this.todoList = createElement<HTMLUListElement>('ul', 'todo-list', this.wrapper)
@@ -28,7 +30,7 @@ class Todos {
 
     async fetchData() {
         try {
-            const response = await fetch(GET_ACTIVE_TODO_URL)
+            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${this.projectId}`)
 
             if (response.ok) {
                 this.todos = await response.json()
@@ -68,7 +70,7 @@ class Todos {
         try {
             const response = await fetch(ADD_TODO_URL, {
                 method: 'POST',
-                body: JSON.stringify({ text: this.formInput.value }),
+                body: JSON.stringify({ text: this.formInput.value, projectId: this.projectId }),
                 headers: {
                     'Content-Type': 'application/json',
                 },

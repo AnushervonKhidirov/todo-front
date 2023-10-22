@@ -7,12 +7,12 @@ import type { IProject } from '../../utils/types.js'
 
 class Projects {
     wrapper: HTMLElement
-    openTodos: () => void
+    openTodos: (projectId: string) => void
     projectList: HTMLUListElement
     projects: IProject[]
     formInput: HTMLInputElement | null
 
-    constructor(wrapper: HTMLElement, openTodos: () => void) {
+    constructor(wrapper: HTMLElement, openTodos: (projectId: string) => void) {
         this.wrapper = wrapper
         this.openTodos = openTodos
         this.projects = []

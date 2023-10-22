@@ -15,7 +15,7 @@ class App {
 
     init() {
         createElement('h1', 'header-title', this.header, null, 'My Projects')
-        this.openTodos()
+        this.openProjects()
     }
 
     openProjects() {
@@ -24,9 +24,9 @@ class App {
         projects.init()
     }
 
-    openTodos() {
+    openTodos(projectId: string) {
         this.main.innerHTML = ''
-        const todos = new Todos(this.main, this.openProjects.bind(this))
+        const todos = new Todos(this.main, projectId, this.openProjects.bind(this))
         todos.init()
     }
 
