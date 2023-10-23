@@ -5,17 +5,22 @@ import { GET_ACTIVE_TODO_URL, ADD_TODO_URL, ADD_EVENT } from '../../utils/consta
 
 import type { ITodo } from '../../utils/types.js'
 
+interface IProjectData {
+    id: string
+    name: string
+}
+
 class Todos {
     wrapper: HTMLElement
-    projectId: string
+    project: IProjectData
     openProjects: () => void
     todos: ITodo[]
     todoList: HTMLUListElement
     formInput: HTMLInputElement | null
 
-    constructor(wrapper: HTMLElement, projectId: string, openProjects: () => void) {
+    constructor(wrapper: HTMLElement, project: IProjectData, openProjects: () => void) {
         this.wrapper = wrapper
-        this.projectId = projectId
+        this.project = project
         this.openProjects = openProjects
         this.todos = []
         this.todoList = createElement<HTMLUListElement>('ul', 'todo-list', this.wrapper)
@@ -24,13 +29,14 @@ class Todos {
 
     async init() {
         await this.fetchData()
+        this.renderBackBtn()
         this.renderTodoList()
         this.renderForm()
     }
 
     async fetchData() {
         try {
-            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${this.projectId}`)
+            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${this.project.id}`)
 
             if (response.ok) {
                 this.todos = await response.json()
@@ -40,7 +46,14 @@ class Todos {
         }
     }
 
+    renderBackBtn() {
+        const backBtn = createElement('button', 'go-back', this.wrapper, null, 'Go back')
+        backBtn.addEventListener('click', this.openProjects)
+    }
+
     renderTodoList() {
+        createElement('h2', 'todo-project-name', this.todoList, null, this.project.name)
+
         this.todos.forEach(todoData => {
             this.renderTodo(this.todoList, todoData)
         })
@@ -70,7 +83,7 @@ class Todos {
         try {
             const response = await fetch(ADD_TODO_URL, {
                 method: 'POST',
-                body: JSON.stringify({ text: this.formInput.value, projectId: this.projectId }),
+                body: JSON.stringify({ text: this.formInput.value, projectId: this.project.id }),
                 headers: {
                     'Content-Type': 'application/json',
                 },

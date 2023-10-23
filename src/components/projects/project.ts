@@ -6,7 +6,7 @@ import type { IProject } from '../../utils/types.js'
 class Project {
     wrapper: HTMLElement
     projectData: IProject
-    openTodos: (projectId: string) => void
+    openTodos: (projectId: string, projectName: string) => void
     updateList: (e: CustomEvent, data: IProject) => void
     project: HTMLElement | null
     projectName: HTMLElement | null
@@ -14,7 +14,7 @@ class Project {
     constructor(
         wrapper: HTMLElement,
         projectData: IProject,
-        openTodos: (projectId: string) => void,
+        openTodos: (projectId: string, projectName: string) => void,
         updateList: (e: CustomEvent, data: IProject) => void
     ) {
         this.wrapper = wrapper
@@ -46,7 +46,7 @@ class Project {
         const actionButtons = createElement('div', 'action-buttons', this.project)
 
         const openBtn = createElement('button', 'open-project-btn', actionButtons, null, 'open')
-        openBtn.addEventListener('click', this.openTodos.bind(this, this.projectData.id))
+        openBtn.addEventListener('click', this.openTodos.bind(this, this.projectData.id, this.projectData.name))
 
         const editBtn = createElement('button', 'edit-project-btn', actionButtons, null, 'edit')
         editBtn.addEventListener('click', this.edit.bind(this, true))

@@ -31,9 +31,18 @@ header {
 
 main {
     display: grid;
+    grid-template-areas: 'main main' 'back form';
+    grid-template-columns: 1fr max-content;
     grid-template-rows: 1fr max-content;
     gap: 2em;
     margin: 50px 100px;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+}
+
+main.switch {
+    pointer-events: none;
+    animation-name: tabSwitching;
 }
 
 h1,
@@ -65,6 +74,7 @@ li {
 form {
     display: grid;
     width: 500px;
+    grid-area: form;
     justify-self: self-end;
     gap: 0.5em;
     font-size: 1em;
@@ -93,6 +103,8 @@ input::placeholder {
 }
 
 button {
+    background-color: var(--primary);
+    color: var(--tertiary);
     font-size: 1em;
     font-family: inherit;
     font-style: italic;
@@ -104,14 +116,39 @@ button {
     transition: background-color 0.2s;
 }
 
+button:hover {
+    background-color: var(--secondary);
+}
+
 form button {
     justify-self: self-end;
-    background-color: var(--primary);
-    color: var(--tertiary);
     font-weight: 700;
     padding: 0.5em 2em;
 }
 
-form button:hover {
-    background-color: var(--secondary);
+button.go-back {
+    grid-area: back;
+    justify-self: self-start;
+    align-self: self-end;
+    font-weight: 700;
+    padding: 0.5em 2em;
+}
+
+@keyframes tabSwitching {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    50% {
+        opacity: 0;
+        transform: translateX(-100vw);
+    }
+    51% {
+        opacity: 0;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
