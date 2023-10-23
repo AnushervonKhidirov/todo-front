@@ -1,8 +1,14 @@
 /* list */
+.todo-list-wrapper {
+    grid-area: main;
+    display: grid;
+    gap: 1em;
+    grid-template-rows: max-content 1fr;
+}
+
 ul.todo-list {
     grid-auto-flow: row;
     grid-auto-rows: max-content;
-    grid-area: main;
 }
 
 .todo-project-name {
@@ -14,6 +20,11 @@ li.todo-item {
     grid-template-columns: 1fr max-content;
     align-items: center;
     padding: 0.5em 1em;
+    transition: opacity 0.2s;
+}
+
+li.todo-item.done {
+    opacity: 0.7;
 }
 
 /* buttons */

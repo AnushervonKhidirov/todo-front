@@ -23,14 +23,14 @@ class Todos {
         this.project = project
         this.openProjects = openProjects
         this.todos = []
-        this.todoList = createElement<HTMLUListElement>('ul', 'todo-list', this.wrapper)
+        this.todoList = createElement<HTMLUListElement>('ul', 'todo-list')
         this.formInput = null
     }
 
     async init() {
         await this.fetchData()
-        this.renderBackBtn()
         this.renderTodoList()
+        this.renderBackBtn()
         this.renderForm()
     }
 
@@ -52,7 +52,10 @@ class Todos {
     }
 
     renderTodoList() {
-        createElement('h2', 'todo-project-name', this.todoList, null, this.project.name)
+        const listWrapper = createElement('div', 'todo-list-wrapper', this.wrapper)
+        createElement('h2', 'todo-project-name', listWrapper, null, this.project.name)
+
+        listWrapper.appendChild(this.todoList)
 
         this.todos.forEach(todoData => {
             this.renderTodo(this.todoList, todoData)

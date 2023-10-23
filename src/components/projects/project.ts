@@ -31,14 +31,14 @@ class Project {
             id: this.projectData.id,
         })
 
-        this.renderProjectData()
+        this.renderProject()
         this.renderActionButtons()
     }
 
-    renderProjectData() {
-        this.projectName = createElement('h3', 'project-name', this.project)
+    renderProject() {
+        this.projectName = createElement('h3', 'project-name', this.project, null, this.projectData.name)
         this.projectName.addEventListener('blur', this.edit.bind(this, false))
-        this.projectName.innerHTML = this.projectData.name
+
         createElement('div', 'project-id', this.project, null, `<b>id:</b> <i>${this.projectData.id}</i>`)
     }
 
@@ -63,13 +63,7 @@ class Project {
         if (isEditable || this.projectData.name === this.projectName.innerHTML) return
 
         try {
-            const response = await fetch(UPDATE_PROJECT_URL, {
-                method: 'POST',
-                body: JSON.stringify({ ...this.projectData, name: this.projectName.innerHTML }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            const response = await this.update({ ...this.projectData, name: this.projectName.innerHTML })
 
             if (response.ok) {
                 this.projectData = await response.json()
@@ -84,13 +78,7 @@ class Project {
 
     async delete() {
         try {
-            const response = await fetch(UPDATE_PROJECT_URL, {
-                method: 'POST',
-                body: JSON.stringify({ ...this.projectData, deleted: true }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            const response = await this.update({ ...this.projectData, deleted: true })
 
             if (response.ok) {
                 this.project?.remove()
@@ -99,6 +87,16 @@ class Project {
         } catch (err: any) {
             alert(err.message)
         }
+    }
+
+    async update(updatedData: IProject) {
+        return await fetch(UPDATE_PROJECT_URL, {
+            method: 'POST',
+            body: JSON.stringify(updatedData),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
     }
 }
 
