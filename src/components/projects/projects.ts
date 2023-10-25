@@ -1,7 +1,7 @@
 import Project from './project.js'
 
 import { createElement } from '../../utils/hooks.js'
-import { GET_ACTIVE_PROJECT_URL, ADD_PROJECT_URL, ADD_EVENT } from '../../utils/constans.js'
+import { GET_ACTIVE_PROJECT_URL, ADD_PROJECT_URL, ADD_EVENT } from '../../utils/constants.js'
 
 import type { IProject } from '../../utils/types.js'
 
@@ -88,16 +88,16 @@ class Projects {
         }
     }
 
-    addProjectEvents(project: Project) {   
-        project.projectElem?.addEventListener('add', () => {
+    addProjectEvents(project: Project) {
+        const { projectElem, projectData } = project
+
+        projectElem?.addEventListener('add', () => {
             this.projects.push(project.projectData)
         })
-        project.projectElem?.addEventListener('edit', () => {
-            const projectData = project.projectData
+        projectElem?.addEventListener('edit', () => {
             this.projects = this.projects.map(project => (project.id === projectData.id ? projectData : project))
         })
-        project.projectElem?.addEventListener('delete', () => {
-            const projectData = project.projectData
+        projectElem?.addEventListener('delete', () => {
             this.projects = this.projects.filter(project => project.id !== projectData.id)
         })
     }

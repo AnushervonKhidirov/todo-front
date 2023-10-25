@@ -1,4 +1,5 @@
-import { IUrlParams } from './types'
+import { NAVIGATE_EVENT } from './constants.js'
+import { IUrlParams } from './types.js'
 
 export function createElement<T extends HTMLElement>(
     tagName: string,
@@ -31,20 +32,27 @@ export function createElement<T extends HTMLElement>(
     return tag as T
 }
 
-export function getCurrTabName(url: string): string | null {
-    const tabName = url.match(/.*?\#([^]*)\?.*/)
+export function navigate(url: string) {
+    window.location.assign(url)
+}
+
+export function getCurrTabName(): string | null {
+    const tabName = window.location.hash.match(/.*?\#([^]*)\?.*/)
     return tabName ? tabName[1] : null
 }
 
-export function getUrlParams(url: string): IUrlParams[] {
-    const urlParams = url.match(/.*?\?([^]*).*/)
+export function getUrlParams(): IUrlParams {
+    const urlParams = window.location.hash.match(/.*?\?([^]*).*/)
+    const paramsObj: IUrlParams = {}
 
-    if (!urlParams) return []
+    if (urlParams) {
+        const params = urlParams[1].replace(/%20/g, ' ')
 
-    const params = urlParams[1].replace(/%20/g, ' ')
+        params.split('&')?.forEach(param => {
+            const key = param.split('=')[0]
+            paramsObj[key] = param.split('=')[1]
+        })
+    }
 
-    return params.split('&')?.map(param => ({
-        name: param.split('=')[0],
-        value: param.split('=')[1],
-    }))
+    return paramsObj
 }

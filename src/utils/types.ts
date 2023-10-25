@@ -13,6 +13,5 @@ export interface ITodo {
 }
 
 export interface IUrlParams {
-    name: string
-    value: string
+    [key: string]: string
 }

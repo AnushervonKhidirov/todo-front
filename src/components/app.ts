@@ -1,8 +1,8 @@
 import Projects from './projects/projects.js'
 import Todos from './todos/todos.js'
 
-import { createElement } from '../utils/hooks.js'
-import { PROJECT_TAB, TODO_TAB, BIN_TAB, TAB_ANIMATION_DURATION } from '../utils/constans.js'
+import { createElement, getCurrTabName, getUrlParams } from '../utils/hooks.js'
+import { TODO_TAB, BIN_TAB, TAB_ANIMATION_DURATION } from '../utils/constants.js'
 
 class App {
     wrapper: HTMLElement
@@ -20,53 +20,42 @@ class App {
     }
 
     init() {
-        const tab = sessionStorage.getItem('tab') || 'project'
-        const projectId = sessionStorage.getItem('projectId')
-        const projectName = sessionStorage.getItem('projectName')
-
         createElement('h1', 'header-title', this.header, null, 'My Projects')
 
-        if (tab === PROJECT_TAB) this.openProjects()
-        if (tab === TODO_TAB && projectId && projectName) this.openTodos(projectId, projectName)
-        if (projectId && projectName) this.openTodos(projectId, projectName)
-        if (tab === BIN_TAB) this.openBin()
+        window.addEventListener('hashchange', () => this.openTab())
+        this.openTab(false)
+    }
+
+    openTab(animation: boolean = true) {
+        const tab = getCurrTabName()
+
+        if (animation) this.switchTabAnimation()
+
+        setTimeout(() => {
+            this.main.innerHTML = ''
+
+            if (tab === TODO_TAB) return this.openTodos()
+            if (tab === BIN_TAB) return this.openBin()
+            this.openProjects()
+        }, animation ? TAB_ANIMATION_DURATION / 2 : 0)
+
     }
 
     openProjects() {
-        this.switchTab()
-        sessionStorage.setItem('tab', PROJECT_TAB)
-
-        setTimeout(() => {
-            this.main.innerHTML = ''
-            const projects = new Projects(this.main)
-            projects.init()
-        }, this.animDuration)
+        const projects = new Projects(this.main)
+        projects.init()
     }
 
-    openTodos(projectId: string, projectName: string) {
-        this.switchTab()
-        sessionStorage.setItem('tab', TODO_TAB)
-        sessionStorage.setItem('projectId', projectId)
-        sessionStorage.setItem('projectName', projectName)
-
-        setTimeout(() => {
-            this.main.innerHTML = ''
-            const todos = new Todos(this.main)
-            todos.init()
-        }, this.animDuration)
+    openTodos() {
+        const todos = new Todos(this.main)
+        todos.init()
     }
 
     openBin() {
-        sessionStorage.setItem('tab', BIN_TAB)
+        // sessionStorage.setItem('tab', BIN_TAB)
     }
 
-    switchTab() {
-        if (this.firstInit) {
-            this.firstInit = false
-            return
-        }
-
-        this.animDuration = TAB_ANIMATION_DURATION / 2
+    switchTabAnimation() {
         this.main.classList.add('switch')
 
         setTimeout(() => {

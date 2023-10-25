@@ -1,6 +1,6 @@
 import { createElement } from '../../utils/hooks.js'
-import { GET_BIN_DATA } from '../../utils/constans.js'
-import { IProject, ITodo } from '../../utils/types.js'
+import { GET_BIN_DATA } from '../../utils/constants.js'
+import type { IProject, ITodo } from '../../utils/types.js'
 
 class Bin {
     wrapper: HTMLElement
@@ -13,7 +13,6 @@ class Bin {
 
     async init() {
         await this.fetchData()
-        console.log(this.bin)
     }
 
     async fetchData() {

@@ -1,5 +1,5 @@
-import { createElement } from '../../utils/hooks.js'
-import { EDIT_EVENT, DELETE_EVENT, UPDATE_PROJECT_URL } from '../../utils/constans.js'
+import { createElement, navigate } from '../../utils/hooks.js'
+import { EDIT_EVENT, DELETE_EVENT, UPDATE_PROJECT_URL, TODO_TAB } from '../../utils/constants.js'
 
 import type { IProject } from '../../utils/types.js'
 
@@ -9,10 +9,7 @@ class Project {
     projectElem: HTMLElement | null
     projectName: HTMLElement | null
 
-    constructor(
-        wrapper: HTMLElement,
-        projectData: IProject,
-    ) {
+    constructor(wrapper: HTMLElement, projectData: IProject) {
         this.wrapper = wrapper
         this.projectData = projectData
         this.projectElem = null
@@ -29,7 +26,7 @@ class Project {
             'data-project': this.projectData.name,
             id: this.projectData.id,
         })
-        
+
         this.projectName = createElement('h3', 'project-name', this.projectElem, null, this.projectData.name)
         this.projectName.addEventListener('blur', this.edit.bind(this, false))
 
@@ -42,7 +39,7 @@ class Project {
         const openBtn = createElement('button', 'open-project-btn', actionButtons, null, 'open')
 
         openBtn.addEventListener('click', () => {
-            window.location.assign(`./#todos?projectId=${this.projectData.id}&projectName=${this.projectData.name}`)
+            navigate(`./#${TODO_TAB}?projectId=${this.projectData.id}&projectName=${this.projectData.name}`)
         })
 
         const editBtn = createElement('button', 'edit-project-btn', actionButtons, null, 'edit')

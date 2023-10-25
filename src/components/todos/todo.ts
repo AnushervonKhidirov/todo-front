@@ -1,5 +1,5 @@
 import { createElement } from '../../utils/hooks.js'
-import { EDIT_EVENT, DELETE_EVENT, UPDATE_TODO_URL } from '../../utils/constans.js'
+import { EDIT_EVENT, DELETE_EVENT, UPDATE_TODO_URL } from '../../utils/constants.js'
 
 import type { ITodo } from '../../utils/types.js'
 
@@ -10,11 +10,7 @@ class Todo {
     todoText: HTMLElement | null
     prepend: boolean
 
-    constructor(
-        wrapper: HTMLElement,
-        todoData: ITodo,
-        prepend: boolean
-    ) {
+    constructor(wrapper: HTMLElement, todoData: ITodo, prepend: boolean) {
         this.wrapper = wrapper
         this.todoData = todoData
         this.todoElem = null
@@ -30,9 +26,16 @@ class Todo {
     renderTodo() {
         const todoClassName = this.todoData.done ? 'todo-item done' : 'todo-item'
 
-        this.todoElem = createElement('li', todoClassName, this.wrapper, {
-            id: this.todoData.id,
-        }, null, this.prepend)
+        this.todoElem = createElement(
+            'li',
+            todoClassName,
+            this.wrapper,
+            {
+                id: this.todoData.id,
+            },
+            null,
+            this.prepend
+        )
 
         this.todoData.done ? this.todoElem?.classList.add('done') : this.todoElem?.classList.remove('done')
 
@@ -79,8 +82,6 @@ class Todo {
 
             if (response.ok) {
                 this.todoData = await response.json()
-
-                console.log(this.todoData)
                 this.todoElem?.dispatchEvent(EDIT_EVENT)
             } else throw new Error("Can't edit todo, please try again later")
         } catch (err: any) {
@@ -88,7 +89,6 @@ class Todo {
         } finally {
             this.todoText.innerHTML = this.todoData.text
         }
-
     }
 
     async delete() {

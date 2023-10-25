@@ -14,7 +14,7 @@ export const DELETE_PROJECT_URL = 'http://localhost:8000/projects/delete'
 
 export const GET_BIN_DATA = 'http://localhost:8000/bin'
 
-export const PROJECT_TAB = 'project'
+// export const PROJECT_TAB = 'project'
 export const TODO_TAB = 'todo'
 export const BIN_TAB = 'bin'
 
@@ -23,3 +23,4 @@ export const TAB_ANIMATION_DURATION = 1500
 export const ADD_EVENT = new CustomEvent('add')
 export const EDIT_EVENT = new CustomEvent('edit')
 export const DELETE_EVENT = new CustomEvent('delete')
+export const NAVIGATE_EVENT = new CustomEvent('navigate')

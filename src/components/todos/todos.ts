@@ -1,24 +1,27 @@
 import Todo from './todo.js'
 
-import { createElement } from '../../utils/hooks.js'
-import { GET_ACTIVE_TODO_URL, ADD_TODO_URL, ADD_EVENT } from '../../utils/constans.js'
+import { createElement, getUrlParams } from '../../utils/hooks.js'
+import { GET_ACTIVE_TODO_URL, ADD_TODO_URL, ADD_EVENT } from '../../utils/constants.js'
 
-import type { ITodo } from '../../utils/types.js'
+import type { ITodo, IUrlParams } from '../../utils/types.js'
 
 class Todos {
     wrapper: HTMLElement
+    params: IUrlParams
     todos: ITodo[]
     todoList: HTMLUListElement
     formInput: HTMLInputElement | null
 
     constructor(wrapper: HTMLElement) {
         this.wrapper = wrapper
+        this.params = {}
         this.todos = []
         this.todoList = createElement<HTMLUListElement>('ul', 'todo-list')
         this.formInput = null
     }
 
     async init() {
+        this.params = getUrlParams()
         await this.fetchData()
         this.renderTodoList()
         this.renderBackBtn()
@@ -27,7 +30,7 @@ class Todos {
 
     async fetchData() {
         try {
-            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${sessionStorage.getItem('projectId')}`)
+            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${this.params.projectId}`)
 
             if (response.ok) {
                 this.todos = await response.json()
@@ -39,11 +42,12 @@ class Todos {
 
     renderBackBtn() {
         const backBtn = createElement('button', 'go-back', this.wrapper, null, 'Go back')
+        backBtn.addEventListener('click', () => window.history.back())
     }
 
     renderTodoList() {
         const listWrapper = createElement('div', 'todo-list-wrapper', this.wrapper)
-        createElement('h2', 'todo-project-name', listWrapper, null, sessionStorage.getItem('projectName'))
+        createElement('h2', 'todo-project-name', listWrapper, null, this.params.projectName)
 
         listWrapper.appendChild(this.todoList)
 
@@ -79,7 +83,7 @@ class Todos {
         try {
             const response = await fetch(ADD_TODO_URL, {
                 method: 'POST',
-                body: JSON.stringify({ text: this.formInput.value, projectId: sessionStorage.getItem('projectId') }),
+                body: JSON.stringify({ text: this.formInput.value, projectId: this.params.projectId }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -97,20 +101,16 @@ class Todos {
     }
 
     addTodoEvents(todo: Todo) {
-        todo.todoElem?.addEventListener('add', () => {
+        const { todoElem, todoData } = todo
+
+        todoElem?.addEventListener('add', () => {
             this.todos.unshift(todo.todoData)
         })
-        todo.todoElem?.addEventListener('edit', () => {
-            const todoData = todo.todoData
+        todoElem?.addEventListener('edit', () => {
             this.todos = this.todos.map(todo => (todo.id === todoData.id ? todoData : todo))
-            console.log('edit')
-            console.log(this.todos)
         })
-        todo.todoElem?.addEventListener('delete', () => {
-            const todoData = todo.todoData
+        todoElem?.addEventListener('delete', () => {
             this.todos = this.todos.filter(todo => todo.id !== todoData.id)
-            console.log('delete')
-            console.log(this.todos)
         })
     }
 }
