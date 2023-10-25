@@ -5,23 +5,14 @@ import { GET_ACTIVE_TODO_URL, ADD_TODO_URL, ADD_EVENT } from '../../utils/consta
 
 import type { ITodo } from '../../utils/types.js'
 
-interface IProjectData {
-    id: string
-    name: string
-}
-
 class Todos {
     wrapper: HTMLElement
-    project: IProjectData
-    openProjects: () => void
     todos: ITodo[]
     todoList: HTMLUListElement
     formInput: HTMLInputElement | null
 
-    constructor(wrapper: HTMLElement, project: IProjectData, openProjects: () => void) {
+    constructor(wrapper: HTMLElement) {
         this.wrapper = wrapper
-        this.project = project
-        this.openProjects = openProjects
         this.todos = []
         this.todoList = createElement<HTMLUListElement>('ul', 'todo-list')
         this.formInput = null
@@ -36,7 +27,7 @@ class Todos {
 
     async fetchData() {
         try {
-            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${this.project.id}`)
+            const response = await fetch(`${GET_ACTIVE_TODO_URL}/${sessionStorage.getItem('projectId')}`)
 
             if (response.ok) {
                 this.todos = await response.json()
@@ -48,12 +39,11 @@ class Todos {
 
     renderBackBtn() {
         const backBtn = createElement('button', 'go-back', this.wrapper, null, 'Go back')
-        backBtn.addEventListener('click', this.openProjects)
     }
 
     renderTodoList() {
         const listWrapper = createElement('div', 'todo-list-wrapper', this.wrapper)
-        createElement('h2', 'todo-project-name', listWrapper, null, this.project.name)
+        createElement('h2', 'todo-project-name', listWrapper, null, sessionStorage.getItem('projectName'))
 
         listWrapper.appendChild(this.todoList)
 
@@ -63,8 +53,11 @@ class Todos {
     }
 
     renderTodo(wrapper: HTMLUListElement, data: ITodo, prepend: boolean = false) {
-        const todo = new Todo(wrapper, data, this.openProjects, this.updateData.bind(this), prepend)
+        const todo = new Todo(wrapper, data, prepend)
         todo.init()
+
+        if (todo.todoElem) this.addTodoEvents(todo)
+        return todo.todoElem
     }
 
     renderForm() {
@@ -86,16 +79,16 @@ class Todos {
         try {
             const response = await fetch(ADD_TODO_URL, {
                 method: 'POST',
-                body: JSON.stringify({ text: this.formInput.value, projectId: this.project.id }),
+                body: JSON.stringify({ text: this.formInput.value, projectId: sessionStorage.getItem('projectId') }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
 
             if (response.ok) {
-                const projectData: ITodo = await response.json()
-                this.renderTodo(this.todoList, projectData, true)
-                this.updateData(ADD_EVENT, projectData)
+                const todoData: ITodo = await response.json()
+                const todoElem = this.renderTodo(this.todoList, todoData, true)
+                todoElem?.dispatchEvent(ADD_EVENT)
                 this.formInput.value = ''
             } else throw new Error("Can't to add todo, try again later")
         } catch (err: any) {
@@ -103,10 +96,22 @@ class Todos {
         }
     }
 
-    updateData(e: CustomEvent, data: ITodo) {
-        if (e.type === 'add') this.todos.unshift(data)
-        if (e.type === 'edit') this.todos = this.todos.map(todo => (todo.id === data.id ? data : todo))
-        if (e.type === 'delete') this.todos = this.todos.filter(todo => todo.id !== data.id)
+    addTodoEvents(todo: Todo) {
+        todo.todoElem?.addEventListener('add', () => {
+            this.todos.unshift(todo.todoData)
+        })
+        todo.todoElem?.addEventListener('edit', () => {
+            const todoData = todo.todoData
+            this.todos = this.todos.map(todo => (todo.id === todoData.id ? todoData : todo))
+            console.log('edit')
+            console.log(this.todos)
+        })
+        todo.todoElem?.addEventListener('delete', () => {
+            const todoData = todo.todoData
+            this.todos = this.todos.filter(todo => todo.id !== todoData.id)
+            console.log('delete')
+            console.log(this.todos)
+        })
     }
 }
 

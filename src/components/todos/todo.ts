@@ -6,24 +6,18 @@ import type { ITodo } from '../../utils/types.js'
 class Todo {
     wrapper: HTMLElement
     todoData: ITodo
-    openProjects: () => void
-    updateList: (e: CustomEvent, data: ITodo) => void
-    todo: HTMLElement | null
+    todoElem: HTMLElement | null
     todoText: HTMLElement | null
     prepend: boolean
 
     constructor(
         wrapper: HTMLElement,
         todoData: ITodo,
-        openProjects: () => void,
-        updateList: (e: CustomEvent, data: ITodo) => void,
         prepend: boolean
     ) {
         this.wrapper = wrapper
         this.todoData = todoData
-        this.openProjects = openProjects
-        this.updateList = updateList
-        this.todo = null
+        this.todoElem = null
         this.todoText = null
         this.prepend = prepend
     }
@@ -36,18 +30,18 @@ class Todo {
     renderTodo() {
         const todoClassName = this.todoData.done ? 'todo-item done' : 'todo-item'
 
-        this.todo = createElement('li', todoClassName, this.wrapper, {
+        this.todoElem = createElement('li', todoClassName, this.wrapper, {
             id: this.todoData.id,
         }, null, this.prepend)
 
-        this.todoData.done ? this.todo?.classList.add('done') : this.todo?.classList.remove('done')
+        this.todoData.done ? this.todoElem?.classList.add('done') : this.todoElem?.classList.remove('done')
 
-        this.todoText = createElement('div', 'todo-text', this.todo, null, this.todoData.text)
+        this.todoText = createElement('div', 'todo-text', this.todoElem, null, this.todoData.text)
         this.todoText.addEventListener('blur', this.edit.bind(this, false))
     }
 
     renderActionButtons() {
-        const actionButtons = createElement('div', 'action-buttons', this.todo)
+        const actionButtons = createElement('div', 'action-buttons', this.todoElem)
 
         const doneBtn = createElement('button', 'done-todo-btn', actionButtons, null, 'done')
         doneBtn.addEventListener('click', this.done.bind(this))
@@ -65,8 +59,8 @@ class Todo {
 
             if (response.ok) {
                 this.todoData = await response.json()
-                this.todoData.done ? this.todo?.classList.add('done') : this.todo?.classList.remove('done')
-                this.updateList(EDIT_EVENT, this.todoData)
+                this.todoData.done ? this.todoElem?.classList.add('done') : this.todoElem?.classList.remove('done')
+                this.todoElem?.dispatchEvent(EDIT_EVENT)
             } else throw new Error("Can't done todo, please try again later")
         } catch (err: any) {
             alert(err.message)
@@ -85,13 +79,16 @@ class Todo {
 
             if (response.ok) {
                 this.todoData = await response.json()
-                this.updateList(EDIT_EVENT, this.todoData)
+
+                console.log(this.todoData)
+                this.todoElem?.dispatchEvent(EDIT_EVENT)
             } else throw new Error("Can't edit todo, please try again later")
         } catch (err: any) {
             alert(err.message)
         } finally {
             this.todoText.innerHTML = this.todoData.text
         }
+
     }
 
     async delete() {
@@ -99,8 +96,8 @@ class Todo {
             const response = await this.update({ ...this.todoData, deleted: true })
 
             if (response.ok) {
-                this.todo?.remove()
-                this.updateList(DELETE_EVENT, this.todoData)
+                this.todoElem?.dispatchEvent(DELETE_EVENT)
+                this.todoElem?.remove()
             } else throw new Error("Can't delete todo, please try again later")
         } catch (err: any) {
             alert(err.message)

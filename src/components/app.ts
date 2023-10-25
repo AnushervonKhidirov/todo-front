@@ -2,7 +2,7 @@ import Projects from './projects/projects.js'
 import Todos from './todos/todos.js'
 
 import { createElement } from '../utils/hooks.js'
-import { PROJECT_TAB, TODO_TAB, BIN_TAB, ANIMATION_DURATION } from '../utils/constans.js'
+import { PROJECT_TAB, TODO_TAB, BIN_TAB, TAB_ANIMATION_DURATION } from '../utils/constans.js'
 
 class App {
     wrapper: HTMLElement
@@ -28,6 +28,7 @@ class App {
 
         if (tab === PROJECT_TAB) this.openProjects()
         if (tab === TODO_TAB && projectId && projectName) this.openTodos(projectId, projectName)
+        if (projectId && projectName) this.openTodos(projectId, projectName)
         if (tab === BIN_TAB) this.openBin()
     }
 
@@ -37,7 +38,7 @@ class App {
 
         setTimeout(() => {
             this.main.innerHTML = ''
-            const projects = new Projects(this.main, this.openTodos.bind(this))
+            const projects = new Projects(this.main)
             projects.init()
         }, this.animDuration)
     }
@@ -50,7 +51,7 @@ class App {
 
         setTimeout(() => {
             this.main.innerHTML = ''
-            const todos = new Todos(this.main, { id: projectId, name: projectName }, this.openProjects.bind(this))
+            const todos = new Todos(this.main)
             todos.init()
         }, this.animDuration)
     }
@@ -65,12 +66,12 @@ class App {
             return
         }
 
-        this.animDuration = ANIMATION_DURATION / 2
+        this.animDuration = TAB_ANIMATION_DURATION / 2
         this.main.classList.add('switch')
 
         setTimeout(() => {
             this.main.classList.remove('switch')
-        }, ANIMATION_DURATION)
+        }, TAB_ANIMATION_DURATION)
     }
 
     logIn() {}

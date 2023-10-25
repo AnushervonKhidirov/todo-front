@@ -11,3 +11,8 @@ export interface ITodo {
     done: boolean
     deleted: boolean
 }
+
+export interface IUrlParams {
+    name: string
+    value: string
+}

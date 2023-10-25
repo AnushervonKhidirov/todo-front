@@ -6,47 +6,44 @@ import type { IProject } from '../../utils/types.js'
 class Project {
     wrapper: HTMLElement
     projectData: IProject
-    openTodos: (projectId: string, projectName: string) => void
-    updateList: (e: CustomEvent, data: IProject) => void
-    project: HTMLElement | null
+    projectElem: HTMLElement | null
     projectName: HTMLElement | null
 
     constructor(
         wrapper: HTMLElement,
         projectData: IProject,
-        openTodos: (projectId: string, projectName: string) => void,
-        updateList: (e: CustomEvent, data: IProject) => void
     ) {
         this.wrapper = wrapper
         this.projectData = projectData
-        this.openTodos = openTodos
-        this.updateList = updateList
-        this.project = null
+        this.projectElem = null
         this.projectName = null
     }
 
     init() {
-        this.project = createElement('li', 'project-item', this.wrapper, {
-            'data-project': this.projectData.name,
-            id: this.projectData.id,
-        })
-
         this.renderProject()
         this.renderActionButtons()
     }
 
     renderProject() {
-        this.projectName = createElement('h3', 'project-name', this.project, null, this.projectData.name)
+        this.projectElem = createElement('li', 'project-item', this.wrapper, {
+            'data-project': this.projectData.name,
+            id: this.projectData.id,
+        })
+        
+        this.projectName = createElement('h3', 'project-name', this.projectElem, null, this.projectData.name)
         this.projectName.addEventListener('blur', this.edit.bind(this, false))
 
-        createElement('div', 'project-id', this.project, null, `<b>id:</b> <i>${this.projectData.id}</i>`)
+        createElement('div', 'project-id', this.projectElem, null, `<b>id:</b> <i>${this.projectData.id}</i>`)
     }
 
     renderActionButtons() {
-        const actionButtons = createElement('div', 'action-buttons', this.project)
+        const actionButtons = createElement('div', 'action-buttons', this.projectElem)
 
         const openBtn = createElement('button', 'open-project-btn', actionButtons, null, 'open')
-        openBtn.addEventListener('click', this.openTodos.bind(this, this.projectData.id, this.projectData.name))
+
+        openBtn.addEventListener('click', () => {
+            window.location.assign(`./#todos?projectId=${this.projectData.id}&projectName=${this.projectData.name}`)
+        })
 
         const editBtn = createElement('button', 'edit-project-btn', actionButtons, null, 'edit')
         editBtn.addEventListener('click', this.edit.bind(this, true))
@@ -67,7 +64,7 @@ class Project {
 
             if (response.ok) {
                 this.projectData = await response.json()
-                this.updateList(EDIT_EVENT, this.projectData)
+                this.projectElem?.dispatchEvent(EDIT_EVENT)
             } else throw new Error("Can't edit project, please try again later")
         } catch (err: any) {
             alert(err.message)
@@ -81,8 +78,8 @@ class Project {
             const response = await this.update({ ...this.projectData, deleted: true })
 
             if (response.ok) {
-                this.project?.remove()
-                this.updateList(DELETE_EVENT, this.projectData)
+                this.projectElem?.dispatchEvent(DELETE_EVENT)
+                this.projectElem?.remove()
             } else throw new Error("Can't delete project, please try again later")
         } catch (err: any) {
             alert(err.message)

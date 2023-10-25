@@ -1,5 +1,5 @@
-@import 'project.css';
-@import 'todo.css';
+@import './project.css';
+@import './todo.css';
 
 :root {
     --primary: #645394;
@@ -25,7 +25,7 @@ body {
 
 header {
     background-color: var(--primary);
-    color: #fff;
+    color: var(--tertiary);
     padding: 2em;
 }
 

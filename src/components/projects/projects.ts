@@ -7,17 +7,17 @@ import type { IProject } from '../../utils/types.js'
 
 class Projects {
     wrapper: HTMLElement
-    openTodos: (projectId: string, projectName: string) => void
     projectList: HTMLUListElement
     projects: IProject[]
     formInput: HTMLInputElement | null
+    eventsAdded: boolean
 
-    constructor(wrapper: HTMLElement, openTodos: (projectId: string, projectName: string) => void) {
+    constructor(wrapper: HTMLElement) {
         this.wrapper = wrapper
-        this.openTodos = openTodos
         this.projects = []
         this.projectList = createElement<HTMLUListElement>('ul', 'project-list', this.wrapper)
         this.formInput = null
+        this.eventsAdded = false
     }
 
     async init() {
@@ -45,8 +45,11 @@ class Projects {
     }
 
     renderProject(wrapper: HTMLUListElement, data: IProject) {
-        const project = new Project(wrapper, data, this.openTodos, this.updateData.bind(this))
+        const project = new Project(wrapper, data)
         project.init()
+
+        if (project.projectElem) this.addProjectEvents(project)
+        return project.projectElem
     }
 
     renderForm() {
@@ -76,8 +79,8 @@ class Projects {
 
             if (response.ok) {
                 const projectData: IProject = await response.json()
-                this.renderProject(this.projectList, projectData)
-                this.updateData(ADD_EVENT, projectData)
+                const projectElem = this.renderProject(this.projectList, projectData)
+                projectElem?.dispatchEvent(ADD_EVENT)
                 this.formInput.value = ''
             } else throw new Error("Can't to add project, try again later")
         } catch (err: any) {
@@ -85,10 +88,18 @@ class Projects {
         }
     }
 
-    updateData(e: CustomEvent, data: IProject) {
-        if (e.type === 'add') this.projects.push(data)
-        if (e.type === 'edit') this.projects = this.projects.map(project => (project.id === data.id ? data : project))
-        if (e.type === 'delete') this.projects = this.projects.filter(project => project.id !== data.id)
+    addProjectEvents(project: Project) {   
+        project.projectElem?.addEventListener('add', () => {
+            this.projects.push(project.projectData)
+        })
+        project.projectElem?.addEventListener('edit', () => {
+            const projectData = project.projectData
+            this.projects = this.projects.map(project => (project.id === projectData.id ? projectData : project))
+        })
+        project.projectElem?.addEventListener('delete', () => {
+            const projectData = project.projectData
+            this.projects = this.projects.filter(project => project.id !== projectData.id)
+        })
     }
 }
 

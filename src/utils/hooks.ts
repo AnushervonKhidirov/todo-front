@@ -1,3 +1,5 @@
+import { IUrlParams } from './types'
+
 export function createElement<T extends HTMLElement>(
     tagName: string,
     className?: string | null,
@@ -27,4 +29,22 @@ export function createElement<T extends HTMLElement>(
     }
 
     return tag as T
+}
+
+export function getCurrTabName(url: string): string | null {
+    const tabName = url.match(/.*?\#([^]*)\?.*/)
+    return tabName ? tabName[1] : null
+}
+
+export function getUrlParams(url: string): IUrlParams[] {
+    const urlParams = url.match(/.*?\?([^]*).*/)
+
+    if (!urlParams) return []
+
+    const params = urlParams[1].replace(/%20/g, ' ')
+
+    return params.split('&')?.map(param => ({
+        name: param.split('=')[0],
+        value: param.split('=')[1],
+    }))
 }
