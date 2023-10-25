@@ -11,10 +11,6 @@ li.project-item {
     transition: transform 1s;
 }
 
-li.project-item.flip {
-    transform: rotateY(180deg);
-}
-
 .project-id i {
     font-size: 0.8em;
 }
@@ -41,21 +37,6 @@ li.project-item.flip {
     justify-self: self-end;
     align-self: self-end;
     gap: 0.5em;
-}
-
-li.project-item.flip .action-buttons {
-    pointer-events: none;
-}
-
-li.project-item button {
-    background-color: var(--tertiary);
-    color: var(--primary);
-    border: 2px solid var(--tertiary);
-}
-
-li.project-item button:hover {
-    background-color: transparent;
-    color: var(--tertiary);
 }
 
 @media screen and (min-width: 1440px) {

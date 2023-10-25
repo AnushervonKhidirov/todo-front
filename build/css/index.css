@@ -1,5 +1,6 @@
 @import './project.css';
 @import './todo.css';
+@import './bin.css';
 
 :root {
     --primary: #645394;
@@ -24,6 +25,8 @@ body {
 }
 
 header {
+    display: grid;
+    grid-template-columns: 1fr max-content;
     background-color: var(--primary);
     color: var(--tertiary);
     padding: 2em;
@@ -103,12 +106,13 @@ input::placeholder {
 }
 
 button {
-    background-color: var(--primary);
-    color: var(--tertiary);
+    background-color: var(--tertiary);
+    color: var(--primary);
     font-size: 1em;
     font-family: inherit;
     font-style: italic;
     border: none;
+    border: 2px solid var(--tertiary);
     border-radius: 1em;
     padding: 0.25em 1em;
     box-sizing: border-box;
@@ -117,21 +121,32 @@ button {
 }
 
 button:hover {
-    background-color: var(--secondary);
+    background-color: transparent;
+    color: var(--tertiary);
 }
 
 form button {
     justify-self: self-end;
-    font-weight: 700;
-    padding: 0.5em 2em;
 }
 
 button.go-back {
     grid-area: back;
     justify-self: self-start;
     align-self: self-end;
+    
+}
+
+button.go-back,
+form button {
+    background-color: var(--primary);
+    color: var(--tertiary);
     font-weight: 700;
     padding: 0.5em 2em;
+}
+
+button.go-back:hover,
+form button:hover {
+    background-color: var(--secondary);
 }
 
 @keyframes tabSwitching {

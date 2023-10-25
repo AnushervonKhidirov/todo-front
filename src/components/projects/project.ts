@@ -6,7 +6,7 @@ import type { IProject } from '../../utils/types.js'
 class Project {
     wrapper: HTMLElement
     projectData: IProject
-    projectElem: HTMLElement | null
+    projectElem: HTMLLIElement | null
     projectName: HTMLElement | null
 
     constructor(wrapper: HTMLElement, projectData: IProject) {
@@ -22,7 +22,7 @@ class Project {
     }
 
     renderProject() {
-        this.projectElem = createElement('li', 'project-item', this.wrapper, {
+        this.projectElem = createElement<HTMLLIElement>('li', 'project-item', this.wrapper, {
             'data-project': this.projectData.name,
             id: this.projectData.id,
         })
@@ -36,16 +36,16 @@ class Project {
     renderActionButtons() {
         const actionButtons = createElement('div', 'action-buttons', this.projectElem)
 
-        const openBtn = createElement('button', 'open-project-btn', actionButtons, null, 'open')
+        const openBtn = createElement<HTMLButtonElement>('button', 'open-project-btn', actionButtons, null, 'open')
 
         openBtn.addEventListener('click', () => {
-            navigate(`./#${TODO_TAB}?projectId=${this.projectData.id}&projectName=${this.projectData.name}`)
+            navigate(`${TODO_TAB}?projectId=${this.projectData.id}&projectName=${this.projectData.name}`)
         })
 
-        const editBtn = createElement('button', 'edit-project-btn', actionButtons, null, 'edit')
+        const editBtn = createElement<HTMLButtonElement>('button', 'edit-project-btn', actionButtons, null, 'edit')
         editBtn.addEventListener('click', this.edit.bind(this, true))
 
-        const deleteBtn = createElement('button', 'delete-project-btn', actionButtons, null, 'delete')
+        const deleteBtn = createElement<HTMLButtonElement>('button', 'delete-project-btn', actionButtons, null, 'delete')
         deleteBtn.addEventListener('click', this.delete.bind(this))
     }
 

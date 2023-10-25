@@ -1,0 +1,25 @@
+ul.bin-list {
+    grid-auto-rows: max-content;
+}
+
+li.bin-item {
+    grid-template-areas: 'type type' 'text button';
+    grid-template-columns: 1fr max-content;
+    align-items: center;
+}
+
+.bin-type {
+    grid-area: type;
+}
+
+.bin-item-text {
+    grid-area: text;
+}
+
+.bin-action-buttons {
+    grid-area: button;
+}
+
+ul.bin-list  .todo-wrapper {
+    transform: scale(0.9);
+}

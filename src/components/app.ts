@@ -1,8 +1,9 @@
 import Projects from './projects/projects.js'
 import Todos from './todos/todos.js'
 
-import { createElement, getCurrTabName, getUrlParams } from '../utils/hooks.js'
+import { createElement, getCurrTabName, navigate } from '../utils/hooks.js'
 import { TODO_TAB, BIN_TAB, TAB_ANIMATION_DURATION } from '../utils/constants.js'
+import Bin from './bin/bin.js'
 
 class App {
     wrapper: HTMLElement
@@ -20,25 +21,33 @@ class App {
     }
 
     init() {
-        createElement('h1', 'header-title', this.header, null, 'My Projects')
-
+        this.renderHeader()
         window.addEventListener('hashchange', () => this.openTab())
         this.openTab(false)
     }
 
+    renderHeader() {
+        createElement('h1', 'header-title', this.header, null, 'My Projects')
+        const binBtn = createElement('button', 'bin-btn', this.header, null, 'Recycle bin')
+        binBtn.addEventListener('click', () => navigate(BIN_TAB))
+    }
+
     openTab(animation: boolean = true) {
         const tab = getCurrTabName()
-
+        
         if (animation) this.switchTabAnimation()
 
-        setTimeout(() => {
-            this.main.innerHTML = ''
+        setTimeout(
+            () => {
+                this.main.innerHTML = ''
 
-            if (tab === TODO_TAB) return this.openTodos()
-            if (tab === BIN_TAB) return this.openBin()
-            this.openProjects()
-        }, animation ? TAB_ANIMATION_DURATION / 2 : 0)
-
+                if (tab === TODO_TAB) return this.openTodos()
+                if (tab === BIN_TAB) return this.openBin()
+                
+                this.openProjects()
+            },
+            animation ? TAB_ANIMATION_DURATION / 2 : 0
+        )
     }
 
     openProjects() {
@@ -52,7 +61,8 @@ class App {
     }
 
     openBin() {
-        // sessionStorage.setItem('tab', BIN_TAB)
+        const bin = new Bin(this.main)
+        bin.init()
     }
 
     switchTabAnimation() {

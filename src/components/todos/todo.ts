@@ -26,16 +26,9 @@ class Todo {
     renderTodo() {
         const todoClassName = this.todoData.done ? 'todo-item done' : 'todo-item'
 
-        this.todoElem = createElement(
-            'li',
-            todoClassName,
-            this.wrapper,
-            {
-                id: this.todoData.id,
-            },
-            null,
-            this.prepend
-        )
+        this.todoElem = createElement<HTMLLIElement>('li', todoClassName, this.wrapper, {
+            id: this.todoData.id,
+        }, null, this.prepend)
 
         this.todoData.done ? this.todoElem?.classList.add('done') : this.todoElem?.classList.remove('done')
 
@@ -46,13 +39,13 @@ class Todo {
     renderActionButtons() {
         const actionButtons = createElement('div', 'action-buttons', this.todoElem)
 
-        const doneBtn = createElement('button', 'done-todo-btn', actionButtons, null, 'done')
+        const doneBtn = createElement<HTMLButtonElement>('button', 'done-todo-btn', actionButtons, null, 'done')
         doneBtn.addEventListener('click', this.done.bind(this))
 
-        const editBtn = createElement('button', 'edit-todo-btn', actionButtons, null, 'edit')
+        const editBtn = createElement<HTMLButtonElement>('button', 'edit-todo-btn', actionButtons, null, 'edit')
         editBtn.addEventListener('click', this.edit.bind(this, true))
 
-        const deleteBtn = createElement('button', 'delete-todo-btn', actionButtons, null, 'delete')
+        const deleteBtn = createElement<HTMLButtonElement>('button', 'delete-todo-btn', actionButtons, null, 'delete')
         deleteBtn.addEventListener('click', this.delete.bind(this))
     }
 

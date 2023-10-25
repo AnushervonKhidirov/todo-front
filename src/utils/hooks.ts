@@ -33,11 +33,11 @@ export function createElement<T extends HTMLElement>(
 }
 
 export function navigate(url: string) {
-    window.location.assign(url)
+    window.location.assign(`./#${url}`)
 }
 
 export function getCurrTabName(): string | null {
-    const tabName = window.location.hash.match(/.*?\#([^]*)\?.*/)
+    const tabName = window.location.hash.match(/.*?\#([^]*)\?.*/) || window.location.hash.match(/.*?\#([^]*).*/)
     return tabName ? tabName[1] : null
 }
 

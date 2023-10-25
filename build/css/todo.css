@@ -1,9 +1,9 @@
 /* list */
 .todo-list-wrapper {
-    grid-area: main;
     display: grid;
-    gap: 1em;
     grid-template-rows: max-content 1fr;
+    grid-area: main;
+    gap: 1em;
 }
 
 ul.todo-list {
@@ -35,19 +35,4 @@ li.todo-item.done {
     justify-self: self-end;
     align-self: self-end;
     gap: 0.5em;
-}
-
-li.todo-item.flip .action-buttons {
-    pointer-events: none;
-}
-
-li.todo-item button {
-    background-color: var(--tertiary);
-    color: var(--primary);
-    border: 2px solid var(--tertiary);
-}
-
-li.todo-item button:hover {
-    background-color: transparent;
-    color: var(--tertiary);
 }

@@ -32,7 +32,7 @@ class Projects {
 
             if (response.ok) {
                 this.projects = await response.json()
-            } else throw new Error("Cant' to get projects, try again later")
+            } else throw new Error("Can't to get projects, try again later")
         } catch (err: any) {
             alert(err.message)
         }
@@ -59,7 +59,7 @@ class Projects {
             placeholder: 'Project name',
         })
 
-        createElement('button', 'submit-project', form, { type: 'submit' }, 'Add project')
+        createElement<HTMLButtonElement>('button', 'submit-project', form, { type: 'submit' }, 'Add project')
         form.addEventListener('submit', this.addProject.bind(this))
     }
 

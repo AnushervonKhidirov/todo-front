@@ -41,7 +41,7 @@ class Todos {
     }
 
     renderBackBtn() {
-        const backBtn = createElement('button', 'go-back', this.wrapper, null, 'Go back')
+        const backBtn = createElement<HTMLButtonElement>('button', 'go-back', this.wrapper, null, 'Go back')
         backBtn.addEventListener('click', () => window.history.back())
     }
 
@@ -71,7 +71,7 @@ class Todos {
             placeholder: 'Todo',
         })
 
-        createElement('button', 'submit-project', form, { type: 'submit' }, 'Add todo')
+        createElement<HTMLButtonElement>('button', 'submit-project', form, { type: 'submit' }, 'Add todo')
         form.addEventListener('submit', this.addProject.bind(this))
     }
 
